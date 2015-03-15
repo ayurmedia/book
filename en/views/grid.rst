@@ -337,3 +337,76 @@ You can specify a display type either inside your model definition or inside pre
     $m = $this->add('Model_Book');
     $m->getElement('author')->display('link');
     $this->add('Grid')->setModel($m);
+
+.. note::
+    generally use of set* and get* could be reduced, as this is php an not java
+    by adding some __get() and __set() to the object it can make syntactical sugar
+    for getters and setters and still keep the function-calls when needed. 
+    
+    class AbstractObject {
+     ...
+     /** 
+     *  somebody tries to use shorthand for function, so we redirect him.
+     *  __get() will only be called if $this->$name not exists. 
+     */
+      function __get($name) {
+        if ( is_function( $this->$name ) ) {
+          $func = 'get'. UCFirst($name); // or ToCamelCase( $name ). 
+          return $this->$func();
+        }
+      }
+     
+      function __set( $name, $value ) {
+        if ( is_function( $this->$name ) ) {
+          $func = 'set'. UCFirst($name); 
+          return $this->$func( $value );
+        }
+      }
+    ...
+    }
+    
+    then you can write: 
+    
+    $m = $this->add('Model_Book');
+    $m->elements->author->display = 'link' ;
+    $this->add('Grid')->model = $m;
+
+    // going more extreme: 
+    // -- missing Attributes would be redirected to ->add('$name')
+    $m = $this->Model_Book; 
+    $m->elements->author->display = 'link';
+    $this->Grid->model = $m; 
+    
+    or even shorter 
+    
+    $this->Grid->model = $this->Model_Book->with->author->display = 'link'; 
+    
+    $this->add->Grid( [
+      'model' => [ 'Model_Book' =>
+          'author' => [ 'display' => 'link' ] 
+        ]
+      ]
+    );
+    
+    $this->add->Grid( ['model' => 'Model_Book'] );     // init
+    $this->Grid->Model_Book->author->display = 'link'; // customize
+    $this->Model_Book->author->display = 'link'; // customize
+    
+    $this->grid = new Grid(); 
+    $this->grid->model = new Model_Book();
+    $this->grid->model->author->display = 'link';
+    
+    $this->add->Grid('Model_Book')->elements->author->display = 'link';
+    
+    if you need to add several fields in a $form then you can use old syntax
+    $form->add('Field','Line','firstname' ); 
+    $form->add('Field','Line','lastname' ); 
+    
+    $form->Field->Line->firstname; 
+    $form->Field->Line->lastname; 
+    
+    but more intutive would be 
+    $form->firstname->add('Field','Line');
+    $form->lastname  = new Field('Line');
+    
+    
