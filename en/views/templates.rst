@@ -37,6 +37,9 @@ Closing tag — very similar to opening tag but surrounded by ``{/`` and
 Empty tag — consists of tag immediately followed by closing tag (such as
 ``{elephant}{/}``)
 
+or similar to xhtml <input type="text" />
+``{elephant/}``
+
 Self-closing tag — another way to define empty tag. It works in exactly
 same way as empty tag. (``{$elephant}``)
 
