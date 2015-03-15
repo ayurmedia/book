@@ -33,6 +33,39 @@ used objects is a :php:class:`Form`. Here is a simple form example::
         $form->js()->univ()->alert('Hello, ',$form['name']);
     }
 
+// remark:
+// univ() is not understandable for a beginner, what does it mean ?
+// i can guess something like "univ(ersal)"
+// in this context you are working with the ui, so i would simply
+// name it ui, so it becomes
+// $form->js()->ui()->alert('Hello, ', $form['name']); 
+// 
+// i also prefer object syntax to array syntax which makes it easier
+// to type and to read: 
+// $form->js()->ui()->alert('Hello, ', $form->name );
+// 
+// by using smart __get() you can even get rid of more brackets
+// $form->js->ui->alert('Hello, ', $form->name )
+//
+// now you have a conflict between field->js and form->js feature
+// as they are in same namespace, they where before also but only
+// separated by function brackets and array-syntax, its a bad design
+// that they share the same namespace, it should be clear what are
+// sub-fields and what are framework-functions like ->js()
+// but maybe its ok and just unusual as sub-objects are mixed and
+// $form['name'] is also just an object like ->js() just of differnt
+// type. 
+//
+// another thing is syntactical suggar, there are 2 syntax for add
+// elements, they should be consistent
+// eg. sometimes its
+// $button = $this->add('Button')...
+// and then its
+// $line = $form->addField('Line'), 
+// so choose one and stick with it. eg. 
+// $line = $form->add('Field','Line',....);
+
+
 Compared to the vanilla PHP approach to forms, this method gives
 tons of advantages already:
 
